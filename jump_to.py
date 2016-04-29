@@ -13,7 +13,7 @@ RE_SELECTOR = re.compile("^(?:\{(-?\d+)\}|\[(.+)\]|/(.+)/)$")
 
 
 class JumpToBase(object):
-    def _run(self, edit, view, extend=False):
+    def _run(self, view, extend=False):
         self.extend = extend
         self.regions = []
         if view:
@@ -105,7 +105,7 @@ class JumpToBase(object):
 
 class JumpToCommand(JumpToBase, sublime_plugin.TextCommand):
     def run(self, edit, characters="", extend=False):
-        self._run(edit, None, extend)
+        self._run(None, extend)
         self.select_regions(characters)
         self.process_regions()
 
@@ -116,7 +116,7 @@ ADDREGIONS_FLAGS = sublime.DRAW_EMPTY | sublime.DRAW_OUTLINED
 
 class JumpToInteractiveCommand(JumpToBase, sublime_plugin.WindowCommand):
     def run(self, characters="", extend=False):
-        self._run(None, self.window.active_view(), extend)
+        self._run(self.window.active_view(), extend)
         text = "Expand selection" if extend else "Jump"
         text += " to (chars or [chars] or {count} or /regex/):"
         self.window.show_input_panel(text, characters, self._on_enter, self._on_change, self._on_cancel)
